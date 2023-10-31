@@ -16,7 +16,7 @@ const getTwoDifferentAlgo = (): [number, number] => {
 
 export const loadImages = (): PairImages => {
   // Choix aléatoire d'un pair d'images
-  // En se basant sur les data qu'on a dans le store
+  // En se basant sur les data qu'on a dans le public/store
   const [randomAlgo1, randomAlgo2] = getTwoDifferentAlgo();
   const imageToCompare = `0${randomIntFromInterval(
     0,
