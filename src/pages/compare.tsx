@@ -14,7 +14,7 @@ import CircularProgress, {
 } from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Actions from "../components/actions";
-import Header from "../components/header/header";
+import Header from "../components/header";
 
 function Copyright(props: any) {
   return (
@@ -44,7 +44,7 @@ const defaultTheme = createTheme();
 
 const imageSize = { width: "40rem", heigth: "40rem" };
 
-export default function Compare() {
+export default function Compare({ setToken }: any) {
   const COUNT = 60;
 
   const [pairImages, setPairImages] = React.useState<PairImages>();
@@ -124,7 +124,7 @@ export default function Compare() {
       <GlobalStyles
         styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }}
       />
-      <Header />
+      <Header setToken={setToken} />
       <Container maxWidth={false}>
         <Grid container justifyContent="center" p={1}>
           <Grid item>

@@ -1,44 +1,40 @@
-import { styled } from "@mui/material/styles";
-import CircularProgress from "@mui/material/CircularProgress";
-import Paper from "@mui/material/Paper";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import Stack from "@mui/material/Stack";
+import Loading from "../components/loading";
 
-export default function Waiting() {
+export default function Waiting({ socket, setToken }: any) {
+  const [loadingLabel, setLoadingLabel] = React.useState(
+    "Waiting for a token ..."
+  );
   const navigate = useNavigate();
-  const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    textAlign: "center",
-    padding: theme.spacing(1),
-  }));
 
-  // TODO mock waiting
-  const timeToGetToken = 5000;
-  const style = {
-    display: "flex",
-    "justify-content": "center",
-    "align-items": "center",
-    "text-align": "center",
-    "min-height": "20rem",
-    margin: "auto",
-  };
+  // const auth = (token: string) => {
+  //   fetch("http://localhost:4000/user/login", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ token }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((auth: boolean) => {
+  //       // setIsAuth(auth);
+  //       navigate("/compare");
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
 
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate(`/compare`);
-    }, timeToGetToken);
-    return () => clearTimeout(timer);
+    socket.emit("getToken");
+    socket.on("token", async (token: string) => {
+      setToken(token);
+      setLoadingLabel(
+        "We got a token from the server, we will redirect you to the page ..."
+      );
+      navigate("/compare");
+    });
+    return () => {
+      socket.off("token");
+    };
   }, []);
 
-  return (
-    <div style={style}>
-      <Stack spacing={2}>
-        <Paper elevation={0}>
-          <CircularProgress color="inherit" size="15rem" />
-        </Paper>
-        <Item elevation={0}>Waiting for a token ...</Item>
-      </Stack>
-    </div>
-  );
+  return <Loading loadingLabel={loadingLabel} />;
 }

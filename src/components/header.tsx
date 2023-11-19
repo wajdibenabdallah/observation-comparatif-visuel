@@ -1,13 +1,11 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "@mui/material/Link";
+import { useNavigate } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ setToken }: any) {
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position="static"
@@ -32,7 +30,11 @@ export default function Header() {
           <Link
             variant="button"
             color="text.primary"
-            href="/"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              setToken(null);
+              navigate("/");
+            }}
             sx={{ my: 1, mx: 1.5 }}
           >
             Déconnexion
