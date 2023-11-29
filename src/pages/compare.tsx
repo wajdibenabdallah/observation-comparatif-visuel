@@ -1,52 +1,27 @@
 import * as React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
+import {
+  ThemeProvider,
+  createTheme,
+  styled,
+  duration,
+} from "@mui/material/styles";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import { ImageChoice, PairImages } from "../types/Image";
+import { type ImageChoice, type PairImages } from "../types/Image";
 import { loadImages } from "../services/Image";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
+
 import Actions from "../components/actions";
 import Header from "../components/header";
+import { Context } from "../App";
+import { COUNT, imageSize } from "../utils/constants";
+import { Copyright } from "../components/copyright";
+import { Timer } from "../components/timer";
 
-function Copyright(props: any) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  textAlign: "center",
-  padding: theme.spacing(1),
-}));
-
-const defaultTheme = createTheme();
-
-const imageSize = { width: "40rem", heigth: "40rem" };
-
-export default function Compare({ setToken }: any) {
-  const COUNT = 60;
-
+export default function Compare() {
+  const { setToken } = React.useContext<any>(Context);
+  const defaultTheme = createTheme();
   const [pairImages, setPairImages] = React.useState<PairImages>();
   const reload = () => {
     setPairImages(loadImages());
@@ -56,35 +31,11 @@ export default function Compare({ setToken }: any) {
   const refRigth = React.useRef<any>(null);
   const [progress, setProgress] = React.useState(COUNT);
 
-  function CircularProgressWithLabel(
-    props: CircularProgressProps & { value: number }
-  ) {
-    return (
-      <Box sx={{ position: "relative", display: "inline-flex" }}>
-        <CircularProgress
-          variant="determinate"
-          {...props}
-          value={(props.value / COUNT) * 100}
-        />
-        <Box
-          sx={{
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: "absolute",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography variant="caption" component="div" color="text.secondary">
-            {props.value}
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
+  const Item = styled(Paper)(({ theme }) => ({
+    ...theme.typography.body2,
+    textAlign: "center",
+    padding: theme.spacing(1),
+  }));
 
   const focus = (image: ImageChoice, leave = false): void => {
     if (image === "LEFT") {
@@ -126,11 +77,7 @@ export default function Compare({ setToken }: any) {
       />
       <Header setToken={setToken} />
       <Container maxWidth={false}>
-        <Grid container justifyContent="center" p={1}>
-          <Grid item>
-            <CircularProgressWithLabel value={progress} />
-          </Grid>
-        </Grid>
+        <Timer progress={progress} />
         <Grid container spacing={3}>
           <Grid item xs={6}>
             <Item ref={refLeft}>

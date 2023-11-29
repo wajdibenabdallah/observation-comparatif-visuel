@@ -1,20 +1,21 @@
 import * as React from "react";
+import { io } from "socket.io-client";
 import {
+  Navigate,
   Outlet,
   createBrowserRouter,
   RouterProvider,
-  useNavigate,
-  Navigate,
-  redirect,
 } from "react-router-dom";
-
 import Waiting from "./pages/waiting";
 import Compare from "./pages/compare";
-import { io } from "socket.io-client";
+
+export const socket = io("http://localhost:4000");
+
+export const Context = React.createContext({});
 
 export default function App() {
   const [token, setToken] = React.useState<string | null>(null);
-  const socket = io("http://localhost:4000");
+  // TODO : Next : try to use Redux instead
 
   const ProtectedRoutes = () => {
     return token ? <Outlet /> : <Navigate to="/" replace />;
@@ -24,22 +25,23 @@ export default function App() {
     { path: "*", element: <Navigate to="/" replace /> },
     {
       path: "/",
-      element: <Waiting socket={socket} setToken={setToken} />,
+      element: <Waiting />,
     },
     {
       element: <ProtectedRoutes />,
       children: [
         {
           path: "/compare",
-          element: <Compare setToken={setToken} />,
+          element: <Compare />,
         },
       ],
     },
   ]);
-
   return (
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
+    <Context.Provider value={{ token, setToken }}>
+      <React.StrictMode>
+        <RouterProvider router={router} />
+      </React.StrictMode>
+    </Context.Provider>
   );
 }
